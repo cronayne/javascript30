@@ -22,13 +22,14 @@
   let isDrawing = false;
   let lastX = 0;
   let lastY = 0;
-  let hue = 0;
+  let hue = 0; //Hue goes from 0 -> 360
   let direction = true;
 
   function draw(e) {
     if(!isDrawing) return;
     console.log(e);
 
+    //this line adds all the colours, http://mothereffinghsl.com/
     context.strokeStyle = `hsl(${hue}, 100%, 50%)`;
     context.beginPath();
     context.moveTo(lastX, lastY);

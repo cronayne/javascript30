@@ -28,8 +28,59 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  //Check if there is anything stored in locaStorage, if not use a blank array
+  const items = JSON.parse(localStorage.getItem('items')) || [];
 
+  
+  function addItem(e) {
+    //Prevents the page from re-loading when the button is clicked.
+    e.preventDefault();
+    //Get the value of the 'item' text box
+    const text = (this.querySelector('[name=item]')).value;
+    //Create an object of the item
+    const item = {
+      text,
+      done: false
+    };
+    //Add item the the array
+    items.push(item);
+    populateList(items, itemsList);
+    //You must always add a string to localStorage so use JSON.parse
+    localStorage.setItem('items', JSON.stringify(items));
+    //Clear the entry when the item is added
+    this.reset();
+  }
+  
+  function populateList(plates = [], platesList) {
+    platesList.innerHTML = plates.map((plate, i) => {
+      return `
+        <li>
+          <input type="checkbox" data-index=${i} id="item${i}" ${plate.done ? 'checked' : ''} />
+          <label for="item${i}">${plate.text}</label>
+        </li>  
+      `;
+    }).join('');
+  }
+
+  function toggleDone(e) {
+    if (!e.target.matches('input')) return; //Skip the next lines unless it is an input
+    const element = e.target;
+    //Get the index of the element
+    const index = element.dataset.index;
+    //Flip the done value from false to true
+    items[index].done = !items[index].done;
+    //Create a localStorage string version
+    localStorage.setItem('items', JSON.stringify(items));
+    //Populate the list.
+    populateList(items, itemsList);
+  }
+
+  addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
+
+  //Populate the list on pageload if there is anything in localStorage
+  populateList(items, itemsList);
+    
 </script>
 
 
